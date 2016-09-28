@@ -5,7 +5,7 @@
 const fs = require('fs');
 const MIPSParser = require('../');
 
-const options = require('nomnom')
+const optionsParser = require('nomnom')
   .script('mips-parser')
   .options({
     expression: {
@@ -19,14 +19,20 @@ const options = require('nomnom')
       type: 'string',
       metavar: 'FILE'
     },
-  })
-  .parse();
+  });
+
+const options = optionsParser.parse();
 
 function main() {
   let {
     expression: code,
     file,
   } = options;
+
+  if (!code && !file) {
+    console.info(optionsParser.getUsage());
+    process.exit(1);
+  }
 
   if (!code) {
     code = fs.readFileSync(file, 'utf-8');
