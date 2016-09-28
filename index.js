@@ -19,7 +19,7 @@
 
     const segments = {
       '.text': {
-        address: null,
+        address: undefined,
         instructions: [],
       },
     };
@@ -142,11 +142,10 @@ const ps = [[-1, 1],
 
         if (!segments[$1]) {
           segments[$1] = {
+            address,
             instructions: [],
           };
         }
-
-        segments[$1].address = address;
      }],
 [18, 2, ($1,$2) => { $$ = {type: 'Directive', kind: 'set', argument: $2} }],
 [19, 1, ($1) => { $$ = $1 }],

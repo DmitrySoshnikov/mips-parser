@@ -475,7 +475,7 @@
 
     const segments = {
       '.text': {
-        address: null,
+        address: undefined,
         instructions: [],
       },
     };
@@ -605,11 +605,10 @@
 
         if (!segments[$1]) {
           segments[$1] = {
+            address,
             instructions: [],
           };
         }
-
-        segments[$1].address = address;
     `]],
 
     "SetDir":      [["SET_DIR SetDirArg",        "$$ = {type: 'Directive', kind: 'set', argument: $2}"]],

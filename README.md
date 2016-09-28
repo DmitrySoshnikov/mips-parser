@@ -1,4 +1,4 @@
-# mips-parser.js
+# mips-parser
 [MIPS Assembly](https://en.wikipedia.org/wiki/MIPS_instruction_set) parser in JavaScript
 
 **MIPS** is a reduced instruction set computer _(RISC)_ instruction set architecture developed by MIPS Technologies (formerly MIPS Computer Systems, Inc.).
@@ -10,8 +10,8 @@ The parser recognizes MIPS Assembly language, and produces segment-based AST, wh
 ### Installation
 
 ```
-git clone https://github.com/DmitrySoshnikov/mips-parser.js.git
-cd mips-parser.js
+git clone https://github.com/DmitrySoshnikov/mips-parser.git
+cd mips-parser
 npm install
 npm run build
 
@@ -37,7 +37,7 @@ Or direct expressions for quick syntax checks:
 The parser can also be used as a Node module:
 
 ```js
-const MIPSParser = require('mips-parser.js');
+const MIPSParser = require('mips-parser');
 
 const source = `
   li $v0, 4
@@ -178,4 +178,4 @@ We get the following AST, which can be interpreted by a virtual machine:
 
 ### Implementation
 
-The `mips-parser.js` is implemented using [Syntax](https://github.com/DmitrySoshnikov/syntax) tool, which generates a LALR(1) parser based on the MIPS [grammar](https://github.com/DmitrySoshnikov/mips-parser.js/mips.g).
+The `mips-parser` is implemented using [Syntax](https://github.com/DmitrySoshnikov/syntax) tool, which generates a LALR(1) parser based on the MIPS [grammar](https://github.com/DmitrySoshnikov/mips-parser/mips.g).
