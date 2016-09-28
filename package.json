@@ -14,7 +14,7 @@
     "prepublish": "npm run build"
   },
   "bin": {
-    "syntax": "./bin/mips-parser"
+    "mips-parser": "./bin/mips-parser"
   },
   "keywords": [
     "MIPS",
