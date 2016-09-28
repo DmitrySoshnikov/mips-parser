@@ -9,6 +9,16 @@ The parser recognizes MIPS Assembly language, and produces segment-based AST, wh
 
 ### Installation
 
+The parser can be installed as an NPM module:
+
+```
+npm install -g mips-parser
+
+mips-parser --help
+```
+
+Or for developement, from the git repository. To regenerate the parser file after editing grammar file, run the `build` command:
+
 ```
 git clone https://github.com/DmitrySoshnikov/mips-parser.git
 cd mips-parser
@@ -23,13 +33,13 @@ npm run build
 MIPS parser can be used as a CLI tool, to parser a file:
 
 ```
-./bin/mips-parser -f ~/example.s
+mips-parser -f ~/example.s
 ```
 
 Or direct expressions for quick syntax checks:
 
 ```
-./bin/mips-parser -e 'li $v0, 4'
+mips-parser -e 'li $v0, 4'
 ```
 
 ### Usage from Node

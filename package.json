@@ -10,7 +10,6 @@
   "main": "index.js",
   "scripts": {
     "build": "./scripts/build",
-    "prepublish": "npm run build"
   },
   "bin": {
     "mips-parser": "./bin/mips-parser"
