@@ -178,4 +178,4 @@ We get the following AST, which can be interpreted by a virtual machine:
 
 ### Implementation
 
-The `mips-parser` is implemented using [Syntax](https://github.com/DmitrySoshnikov/syntax) tool, which generates a LALR(1) parser based on the MIPS [grammar](https://github.com/DmitrySoshnikov/mips-parser/mips.g).
+The `mips-parser` is implemented using [Syntax](https://github.com/DmitrySoshnikov/syntax) tool, which generates a LALR(1) parser based on the MIPS [grammar](https://github.com/DmitrySoshnikov/mips-parser/blob/master/mips.g).
