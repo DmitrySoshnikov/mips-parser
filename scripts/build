@@ -1,0 +1,1 @@
+./node_modules/syntax-cli/bin/syntax -g ./mips.g -o "`pwd`/index.js" -m lalr1

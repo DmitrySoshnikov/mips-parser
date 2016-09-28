@@ -1,0 +1,32 @@
+
+{
+  "name": "mips-parser",
+  "version": "0.0.1",
+  "description": "MIPS Assembly parser in JavaScript",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DmitrySoshnikov/mips-parser.git"
+  },
+  "bugs": "https://github.com/DmitrySoshnikov/mips-parser/issues",
+  "main": "index.js",
+  "scripts": {
+    "build": "./scripts/build",
+    "prepublish": "npm run build"
+  },
+  "bin": {
+    "syntax": "./bin/mips-parser"
+  },
+  "keywords": [
+    "MIPS",
+    "assembly",
+    "parser"
+  ],
+  "author": "Dmitry Soshnikov",
+  "license": "MIT Style License",
+  "dependencies": {
+    "nomnom": "^1.8.1"
+  },
+  "devDependencies": {
+    "syntax-cli": "^0.0.1"
+  }
+}
