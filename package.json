@@ -1,6 +1,6 @@
 {
   "name": "mips-parser",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "MIPS Assembly parser in JavaScript",
   "repository": {
     "type": "git",
