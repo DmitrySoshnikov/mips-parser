@@ -9,7 +9,7 @@
   "bugs": "https://github.com/DmitrySoshnikov/mips-parser/issues",
   "main": "index.js",
   "scripts": {
-    "build": "./scripts/build",
+    "build": "./scripts/build"
   },
   "bin": {
     "mips-parser": "./bin/mips-parser"
