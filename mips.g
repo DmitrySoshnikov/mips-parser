@@ -14,17 +14,17 @@
   "lex": {
     "macros": {
       "id": "[a-zA-Z0-9_]",
+      "EOF": "$",
     },
 
     "rules": [
-      [`\\s+`,          `/* skip whitespace */`],
-      [`#.*\\n`,        `/* skip comments */`],
-
+      [`\\s+`,              `/* skip whitespace */`],
+      [`#[^\\n\\{EOF}]*`,   `/* skip comments */`],
 
       // ------------------------------------------------
       // Strings, chars
-      [`"[^"]*"`,       `yytext = yytext.slice(1, -1); return 'STRING';`],
-      [`'[^']*'`,       `yytext = yytext.slice(1, -1); return 'CHAR';`],
+      [`"[^"]*"`,           `yytext = yytext.slice(1, -1); return 'STRING';`],
+      [`'[^']*'`,           `yytext = yytext.slice(1, -1); return 'CHAR';`],
 
       // ------------------------------------------------
       // Numeric Reg names (including float) with $ prefix

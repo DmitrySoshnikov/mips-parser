@@ -7,7 +7,7 @@ MIPS is a _load-store_ architecture (also sometimes called _"register-register"_
 
 The parser recognizes MIPS Assembly language, and produces segment-based AST, which can be used directly for interpretation, implementing a MIPS virtual machine, or emitting an actual bytecode corresponding to the instructions.
 
-Check the [notes](http://dmitrysoshnikov.com/compilers/mips-assembly-parser/) on the parser implementation, and you can also [try it online](https://runkit.com/57ed6f39a791121400c37dd9/57ed71414ff71e140000c3be).
+You can check the [notes](http://dmitrysoshnikov.com/compilers/mips-assembly-parser/) on the parser implementation, and also [try it online](https://runkit.com/57ed6f39a791121400c37dd9/57ed71414ff71e140000c3be).
 
 ### Installation
 
