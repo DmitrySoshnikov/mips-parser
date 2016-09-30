@@ -170,6 +170,7 @@
         "addiu",
         "addu",
         "and",
+        "andi",
         "b",
         "bal",
         "bc0f",
