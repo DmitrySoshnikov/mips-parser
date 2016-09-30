@@ -222,7 +222,7 @@ let tokenizer;
  */
 
 const lexRules = [[/^\s+/, () => { /* skip whitespace */ }],
-[/^#[^\n\$]*/, () => { /* skip comments */ }],
+[/^#.*(\n|\$)/, () => { /* skip comments */ }],
 [/^"[^"]*"/, () => { yytext = yytext.slice(1, -1); return 'STRING'; }],
 [/^'[^']*'/, () => { yytext = yytext.slice(1, -1); return 'CHAR'; }],
 [/^(\$)f?\d{1,2}\b/, () => { 
@@ -296,7 +296,10 @@ tokenizer = {
 
   getNextToken() {
     if (!this.hasMoreTokens()) {
-      return null;
+      return {
+        type: EOF,
+        value: EOF,
+      };
     } else if (this.isEOF()) {
       this._cursor++;
       return {

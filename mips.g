@@ -19,7 +19,7 @@
 
     "rules": [
       [`\\s+`,              `/* skip whitespace */`],
-      [`#[^\\n\\{EOF}]*`,   `/* skip comments */`],
+      [`#.*(\\n|\\{EOF})`,  `/* skip comments */`],
 
       // ------------------------------------------------
       // Strings, chars
