@@ -225,8 +225,16 @@ const lexRules = [[/^\s+/, () => { /* skip whitespace */ }],
 [/^#.*\n/, () => { /* skip comments */ }],
 [/^"[^"]*"/, () => { yytext = yytext.slice(1, -1); return 'STRING'; }],
 [/^'[^']*'/, () => { yytext = yytext.slice(1, -1); return 'CHAR'; }],
-[/^(\$)f?(0|[1-9]|1[0-9]|2[0-5]|2[89]|3[0-1])/, () => { 
-        return yytext[1] === 'f' ? 'FLOAT_REG' : 'NUM_REG';
+[/^(\$)f?\d{1,2}\b/, () => { 
+        const isFloat = yytext[1] === 'f';
+        const reg = yytext.slice(isFloat ? 2 : 1);
+        const n = Number(reg);
+
+        if ((reg.length === 2 && n < 10) || n > 31) {
+          throw new Error('Unknown register: ' + reg);
+        }
+
+        return isFloat ? 'FLOAT_REG' : 'NUM_REG';
        }],
 [/^\$(zero|at|v0|v1|a0|a1|a2|a3|t0|t1|t2|t3|t4|t5|t6|t7|s0|s1|s2|s3|s4|s5|s6|s7|t8|t9|k0|k1|gp|sp|s8|fp|ra)/, () => { return 'NAME_REG' }],
 [/^\.asciiz/, () => { return '.asciiz' }],
@@ -262,7 +270,7 @@ const lexRules = [[/^\s+/, () => { /* skip whitespace */ }],
 [/^\.frame/, () => { return '.frame' }],
 [/^\.end/, () => { return '.end' }],
 [/^(\.text|\.data|\.rdata|\.sdata)/, () => { return 'SEGMENT' }],
-[/^(trunc\.l\.s|trunc\.l\.d|sub\.s|sqrt\.s|s\.s|s\.d|rsqrt\.s|round\.w\.s|round\.w\.d|round\.l\.s|round\.l\.d|recip\.s|nmsub\.s|nmadd\.s|neg\.s|mul\.s|msub\.s|movz\.s|movt\.s|movn\.s|movf\.s|mov\.s|madd\.s|ldc1|l\.s|l\.d|floor\.w\.s|floor\.w\.d|floor\.l\.s|floor\.l\.d|div\.s|cvt\.w\.s|cvt\.w\.d|cvt\.s\.w|cvt\.s\.l|cvt\.s\.d|cvt\.l\.s|cvt\.l\.d|cvt\.d\.w|cvt\.d\.s|cvt\.d\.l|ceil\.w\.s|ceil\.w\.d|ceil\.l\.s|ceil\.l\.d|c\.un\.s|c\.ult\.s|c\.ule\.s|c\.ueq\.s|c\.sf.\s|c\.seq\.s|c\.olt\.s|c\.ole\.s|c\.ngt\.s|c\.ngl\.s|c\.nge\.s|c\.lt\.s|c\.le\.s|c\.f.s|c\.eq\.s|add.s|abs.s|xori|xor|wb|waiti|ushusw|usd|ulw|ulhu|ulh|uld|u2r|tnei|tne|tltu|tltiu|tlti|tlt|tlbwr|tlbwi|tlbr|tlbp|tgeu|tgeiu|tgei|tge|teqi|teq|syscall|sync|swxc1|swr|swl|swc1|sw|suspend|subu|sub|standby|srlv|srl|srav|sra|sne|sltu|sltiu|slti|slt|sllv|sll|sleu|sle|sh|sgtu|sgt|sgeu|sge|seq|selsr|selsl|sdxc1|sdr|sdl|sdc1|sdbbp|sd|scd|sc|sb|rsub|ror|rol|rmul|rfe|remu|rem|radd|r2u|prefx|pref|ori|or|not|nor|nop|negu|neg|multu|mult|mulou|mulo|mulu|mul|mtlo|mthi|mtc2|mtc1|mtc0|msubu|msub|movz|movt|movn|movf|move|min|mflo|mfhi|mfc2|mfc1|mfc0|max|madd16|madu|mad|maddu|madd|lwxc1|lwu|lwr|lwl|lwc1|lw|lui|lld|ll|li|lhu|lh|ldxc1|ldr|ldl|ld|lbu|lb|la|jalr|jal|jr|j|flushd|ffs|ffc|eret|divu|divou|divo|divdu|divd|div|ctc2|ctc1|ctc0|cfc2|cfc1|cfc0|cache|break|bnezl|bnez|bnel|bne|bltzl|bltzall|bltzal|bltz|bltul|bltu|bltl|blt|blezl|blez|bleul|bleu|blel|ble|bgtzl|bgtz|bgtul|bgtu|bgtl|bgt|bgezl|bgezall|bgezal|bgez|bgeul|bgeu|bgel|bge|beqzl|beqz|beql|beq|bc2tl|bc2t|bc2fl|bc2f|bc1tl|bc1t|bc1fl|bc0tlbc1f|bc0t|bc0fl|bc0f|bal|b\b|and|addu|addiu|addi|addciu|add|abs)/, () => { return 'OPCODE' }],
+[/^\b(trunc\.l\.s|trunc\.l\.d|sub\.s|sqrt\.s|s\.s|s\.d|rsqrt\.s|round\.w\.s|round\.w\.d|round\.l\.s|round\.l\.d|recip\.s|nmsub\.s|nmadd\.s|neg\.s|mul\.s|msub\.s|movz\.s|movt\.s|movn\.s|movf\.s|mov\.s|madd\.s|ldc1|l\.s|l\.d|floor\.w\.s|floor\.w\.d|floor\.l\.s|floor\.l\.d|div\.s|cvt\.w\.s|cvt\.w\.d|cvt\.s\.w|cvt\.s\.l|cvt\.s\.d|cvt\.l\.s|cvt\.l\.d|cvt\.d\.w|cvt\.d\.s|cvt\.d\.l|ceil\.w\.s|ceil\.w\.d|ceil\.l\.s|ceil\.l\.d|c\.un\.s|c\.ult\.s|c\.ule\.s|c\.ueq\.s|c\.sf.\s|c\.seq\.s|c\.olt\.s|c\.ole\.s|c\.ngt\.s|c\.ngl\.s|c\.nge\.s|c\.lt\.s|c\.le\.s|c\.f.s|c\.eq\.s|add.s|abs.s|xori|xor|wb|waiti|ushusw|usd|ulw|ulhu|ulh|uld|u2r|tnei|tne|tltu|tltiu|tlti|tlt|tlbwr|tlbwi|tlbr|tlbp|tgeu|tgeiu|tgei|tge|teqi|teq|syscall|sync|swxc1|swr|swl|swc1|sw|suspend|subu|subi|sub|standby|srlv|srl|srav|sra|sne|sltu|sltiu|slti|slt|sllv|sll|sleu|sle|sh|sgtu|sgt|sgeu|sge|seq|selsr|selsl|sdxc1|sdr|sdl|sdc1|sdbbp|sd|scd|sc|sb|rsub|ror|rol|rmul|rfe|remu|rem|radd|r2u|prefx|pref|ori|or|not|nor|nop|negu|neg|multu|mult|mulou|mulo|mulu|mul|mtlo|mthi|mtc2|mtc1|mtc0|msubu|msub|movz|movt|movn|movf|move|min|mflo|mfhi|mfc2|mfc1|mfc0|max|madd16|madu|mad|maddu|madd|lwxc1|lwu|lwr|lwl|lwc1|lw|lui|lld|ll|li|lhu|lh|ldxc1|ldr|ldl|ld|lbu|lb|la|jalr|jal|jr|j|flushd|ffs|ffc|eret|divu|divou|divo|divdu|divd|div|ctc2|ctc1|ctc0|cfc2|cfc1|cfc0|cache|break|bnezl|bnez|bnel|bne|bltzl|bltzall|bltzal|bltz|bltul|bltu|bltl|blt|blezl|blez|bleul|bleu|blel|ble|bgtzl|bgtz|bgtul|bgtu|bgtl|bgt|bgezl|bgezall|bgezal|bgez|bgeul|bgeu|bgel|bge|beqzl|beqz|beql|beq|bc2tl|bc2t|bc2fl|bc2f|bc1tl|bc1t|bc1fl|bc0tlbc1f|bc0t|bc0fl|bc0f|bal|b|and|addu|addiu|addi|addciu|add|abs)\b/, () => { return 'OPCODE' }],
 [/^\+/, () => { return '+' }],
 [/^\-/, () => { return '-' }],
 [/^\*/, () => { return '*' }],

@@ -29,8 +29,16 @@
       // ------------------------------------------------
       // Numeric Reg names (including float) with $ prefix
 
-      [`(\\$)f?(0|[1-9]|1[0-9]|2[0-5]|2[89]|3[0-1])`, `
-        return yytext[1] === 'f' ? 'FLOAT_REG' : 'NUM_REG';
+      [`(\\$)f?\\d{1,2}\\b`, `
+        const isFloat = yytext[1] === 'f';
+        const reg = yytext.slice(isFloat ? 2 : 1);
+        const n = Number(reg);
+
+        if ((reg.length === 2 && n < 10) || n > 31) {
+          throw new Error('Unknown register: ' + reg);
+        }
+
+        return isFloat ? 'FLOAT_REG' : 'NUM_REG';
       `],
 
       // ------------------------------------------------
@@ -154,7 +162,7 @@
       // ------------------------------------------------
       // OpCodes
 
-      ['(' + [
+      ['\\b(' + [
         "abs",
         "add",
         "addciu",
@@ -162,7 +170,7 @@
         "addiu",
         "addu",
         "and",
-        "b\\b",
+        "b",
         "bal",
         "bc0f",
         "bc0fl",
@@ -332,6 +340,7 @@
         "srlv",
         "standby",
         "sub",
+        "subi",
         "subu",
         "suspend",
         "sw",
@@ -430,7 +439,7 @@
         "sub\\.s",
         "trunc\\.l\\.d",
         "trunc\\.l\\.s",
-      ].reverse().join('|') + ')', "return 'OPCODE'"],
+      ].reverse().join('|') + ')\\b', "return 'OPCODE'"],
 
       // ------------------------------------------------
       // Operators
