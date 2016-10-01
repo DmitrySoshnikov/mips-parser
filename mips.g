@@ -503,6 +503,33 @@
 
     // Stores compiler directives.
     const directives = [];
+
+    function handleLabel(label) {
+      // TODO: calculate statically and record actual label address in
+      // the .text or .data segment.
+      labels[label.value] = {
+        address: instructionsCount,
+        segment: currentSegment,
+      };
+    }
+
+    function handleElement(element) {
+      switch (element.type) {
+        case 'Instruction':
+        case 'Data':
+          instructionsCount++;
+          segments[currentSegment].instructions.push(element);
+          break;
+
+        case 'Directive':
+        case 'Segment':
+          directives.push(element);
+          break;
+
+        default:
+          throw new Error('Unexpected statement: ' + element.type);
+      }
+    }
   `,
 
   "bnf": {
@@ -511,48 +538,18 @@
     "Statements":   ["Statement",
                      "Statements Statement"],
 
-    "Statement":    [["OptLabelList Element", `
+    "Statement":    [["LABEL",                    "handleLabel({type: 'Label', value: $1})"],
+                     ["Element",                  "handleElement($1)"]],
 
-      if ($1) {
-        // TODO: calculate statically and record actual label address in
-        // the .text or .data segment.
+    "Element":      [["Instruction",              "$$ = $1"],
+                     ["Data",                     "$$ = $1"],
+                     ["Directive",                "$$ = $1"]],
 
-        // There might be several labels pointing to the same location.
-        for (const label of $1) {
-          labels[label.value] = {
-            address: instructionsCount,
-            segment: currentSegment,
-          };
-        }
-      }
+    "Instruction":  [["OPCODE Operands",          "$$ = {type: 'Instruction', opcode: $1, operands: $2}"]],
 
-      switch ($2.type) {
-        case 'Instruction':
-        case 'Data':
-          instructionsCount++;
-          segments[currentSegment].instructions.push($2);
-          break;
-
-        case 'Directive':
-        case 'Segment':
-          directives.push($2);
-          break;
-
-        default:
-          throw new Error('Unexpected statement: ' + $2.type);
-      }
-
-    `]],
-
-    "Element":      [["Instruction",             "$$ = $1"],
-                     ["Data",                    "$$ = $1"],
-                     ["Directive",               "$$ = $1"]],
-
-    "Instruction":  [["OPCODE Operands",         "$$ = {type: 'Instruction', opcode: $1, operands: $2}"]],
-
-    "Operands":     [["Op",                      "$$ = [$1]"],
-                     ["Op , Op",                 "$$ = [$1, $3]"],
-                     ["Op , Op , Op",            "$$ = [$1, $3, $5]"],
+    "Operands":     [["Op",                       "$$ = [$1]"],
+                     ["Op , Op",                  "$$ = [$1, $3]"],
+                     ["Op , Op , Op",             "$$ = [$1, $3, $5]"],
                      ["ε"]],
 
     "Op":           [["Reg",                      "$$ = $1"],
@@ -598,30 +595,30 @@
 
     "SegmentDir":   [["SEGMENT OptNumber",  `
 
-        // Record current segment on entering it.
+      // Record current segment on entering it.
 
-        currentSegment = $1;
-        instructionsCount = 0;
+      currentSegment = $1;
+      instructionsCount = 0;
 
-        // If address is specified, the segmented starts
-        // at that specific memory location.
+      // If address is specified, the segmented starts
+      // at that specific memory location.
 
-        const address = $2 ? $2.value : undefined;
+      const address = $2 ? $2.value : undefined;
 
-        $$ = {
-          type: 'Segment',
-          value: $1,
+      $$ = {
+        type: 'Segment',
+        value: $1,
+        address,
+      };
+
+      // Initialize the segment if it's not allocated yet.
+
+      if (!segments[$1]) {
+        segments[$1] = {
           address,
+          instructions: [],
         };
-
-        // Initialize the segment if it's not allocated yet.
-
-        if (!segments[$1]) {
-          segments[$1] = {
-            address,
-            instructions: [],
-          };
-        }
+      }
     `]],
 
     "SetDir":       [["SET_DIR SetDirArg",        "$$ = {type: 'Directive', kind: 'set', argument: $2}"]],
@@ -666,14 +663,6 @@
 
     "OptOffset":    [["Offset",                   "$$ = $1"],
                      ["ε",                        "$$ = {type: 'Offset', kind: 'Const', value: 0}"]],
-
-    "OptLabelList": [["LabelList",                "$$ = $1"],
-                     ["ε"]],
-
-    "LabelList":    [["Label",                    "$$ = [$1];"],
-                     ["LabelList Label",          "$$ = $1; $1.push($2);"]],
-
-    "Label":        [["LABEL",                    "$$ = {type: 'Label', value: $1}"]],
 
     "Expr":         [["Expr + Expr",              "$$ = {type: 'Binary', 'operator': '+', left: $1, right: $3}"],
                      ["Expr - Expr",              "$$ = {type: 'Binary', 'operator': '-', left: $1, right: $3}"],
