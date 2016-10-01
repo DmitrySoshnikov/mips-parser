@@ -9,7 +9,8 @@
   "bugs": "https://github.com/DmitrySoshnikov/mips-parser/issues",
   "main": "index.js",
   "scripts": {
-    "build": "./scripts/build"
+    "build": "./scripts/build",
+    "test": "./scripts/test"
   },
   "bin": {
     "mips-parser": "./bin/mips-parser"
@@ -25,6 +26,7 @@
     "nomnom": "^1.8.1"
   },
   "devDependencies": {
-    "syntax-cli": "^0.0.4"
+    "syntax-cli": "^0.0.4",
+    "jest-cli": "^15.1.1"
   }
 }
