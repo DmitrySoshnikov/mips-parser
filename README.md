@@ -107,7 +107,7 @@ We get the following AST, which can be interpreted by a virtual machine:
             {
               "type": "Number",
               "kind": "decimal",
-              "value": "4"
+              "value": 4
             }
           ]
         },
@@ -142,7 +142,7 @@ We get the following AST, which can be interpreted by a virtual machine:
             {
               "type": "Number",
               "kind": "decimal",
-              "value": "10"
+              "value": 10
             }
           ]
         },
