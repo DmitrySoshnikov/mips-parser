@@ -479,30 +479,37 @@
     ["left", "UMINUS"],
   ],
 
+  // Code executed once on module load.
   "moduleInclude": `
-    // Stores instructions per segment. Initialize to code segment
-    // other segments can be added during parsing.
+    // Stores instructions per segment.
+    let segments;
 
-    const segments = {
-      '.text': {
-        address: undefined,
-        instructions: [],
-      },
-    };
-
-    // Current segment where the instructions are written,
-    // init to the code segment.
-
-    let currentSegment = '.text';
+    // Current segment where the instructions are written.
+    let currentSegment;
 
     // Instructions count per segment.
     let instructionsCount = 0;
 
     // Store labels defined within a segment.
-    const labels = {};
+    let labels;
 
     // Stores compiler directives.
-    const directives = [];
+    let directives;
+
+    // Resets the storage on parse begin.
+    function resetStorage() {
+      segments = {
+        '.text': {
+          address: undefined,
+          instructions: [],
+        },
+      };
+
+      currentSegment = '.text';
+      instructionsCount = 0;
+      labels = {};
+      directives = [];
+    }
 
     function handleLabel(label) {
       // TODO: calculate statically and record actual label address in
@@ -531,6 +538,9 @@
       }
     }
   `,
+
+  // Code executed on each parse begin event.
+  "onParseBegin":   `resetStorage();`,
 
   "bnf": {
     "Program":      [["Statements",  "$$ = {type: 'Program', segments, labels, directives}"]],
@@ -571,7 +581,7 @@
                      ["Const + Const",            "$$ = {type: 'Offset', kind: 'offset', base: $1, offset: $3, operator: '+'}"],
                      ["Const - Const",            "$$ = {type: 'Offset', kind: 'offset', base: $1, offset: $3, operator: '-'}"]],
 
-    "Data":         [["DataMode DataList",        "$$ = {type: 'Data', mode: $1, value: $2}"],
+    "Data":         [["DataMode DataList",        "$$ = {type: 'Data', mode: $1, value: $2.length === 1 ? $2[0] : $2}"],
                      [".ascii String",            "$$ = {type: 'Data', mode: $1, value: $2}"],
                      [".asciiz String",           "$$ = {type: 'Data', mode: $1, value: $2}"],
                      [".space Expr",              "$$ = {type: 'Data', mode: $1, value: $2}"]],
@@ -672,8 +682,8 @@
                      ["- Expr",                   "$$ = {type: 'Unary', 'operator': '-', value: $2}", {prec: 'UMINUS'}],
                      ["Const",                    "$$ = $1"]],
 
-    "Number":       [["DECIMAL",                  "$$ = {type: 'Number', kind: 'decimal', value: $1}"],
-                     ["HEXADECIMAL",              "$$ = {type: 'Number', kind: 'hex', value: $1}"]],
+    "Number":       [["DECIMAL",                  "$$ = {type: 'Number', kind: 'decimal', value: Number($1)}"],
+                     ["HEXADECIMAL",              "$$ = {type: 'Number', kind: 'hex', value: Number($1), raw: $1}"]],
 
     "Const":        [["Number",                   "$$ = $1"],
                      ["CHAR",                     "$$ = {type: 'Char', value: $1}"],
