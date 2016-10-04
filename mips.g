@@ -497,7 +497,7 @@
     let directives;
 
     // Resets the storage on parse begin.
-    function resetStorage() {
+    yyparse.onParseBegin = () => {
       segments = {
         '.text': {
           address: undefined,
@@ -509,7 +509,7 @@
       instructionsCount = 0;
       labels = {};
       directives = [];
-    }
+    };
 
     function handleLabel(label) {
       // TODO: calculate statically and record actual label address in
@@ -538,9 +538,6 @@
       }
     }
   `,
-
-  // Code executed on each parse begin event.
-  "onParseBegin":   `resetStorage();`,
 
   "bnf": {
     "Program":      [["Statements",  "$$ = {type: 'Program', segments, labels, directives}"]],
