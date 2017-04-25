@@ -14,12 +14,11 @@
   "lex": {
     "macros": {
       "id": "[a-zA-Z0-9_]",
-      "EOF": "$",
     },
 
     "rules": [
       [`\\s+`,              `/* skip whitespace */`],
-      [`#.*(\\n|\\{EOF})`,  `/* skip comments */`],
+      [`#[^\\n]*`,          `/* skip comments */`],
 
       // ------------------------------------------------
       // Strings, chars

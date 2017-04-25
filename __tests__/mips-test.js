@@ -74,6 +74,20 @@ describe('MIPS Parser', () => {
     expect(program.segments['.text']).toBeDefined();
   });
 
+  it('comments', () => {
+    let program = MIPSParser.parse(`
+      li $v0, 4 # at new line
+      li $v0, 5 # at EOF
+    `);
+    expect(program.segments['.text']).toBeDefined();
+
+    program = MIPSParser.parse(`
+      li $v0, 4 #
+      li $v0, 5 #
+    `);
+    expect(program.segments['.text']).toBeDefined();
+  });
+
   it('data declaration', () => {
     const program = MIPSParser.parse(`
 
