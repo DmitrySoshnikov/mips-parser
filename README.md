@@ -1,4 +1,8 @@
 # mips-parser
+
+
+[![Build Status](https://travis-ci.org/DmitrySoshnikov/mips-parser.svg?branch=master)](https://travis-ci.org/DmitrySoshnikov/mips-parser) [![npm version](https://badge.fury.io/js/mips-parser.svg)](https://badge.fury.io/js/mips-parser) [![npm downloads](https://img.shields.io/npm/dt/mips-parser.svg)](https://www.npmjs.com/package/mips-parser)
+
 [MIPS Assembly](https://en.wikipedia.org/wiki/MIPS_instruction_set) parser in JavaScript
 
 **MIPS** is a reduced instruction set computer _(RISC)_ instruction set architecture developed by MIPS Technologies (formerly MIPS Computer Systems, Inc.).
